@@ -27,7 +27,9 @@ ADDR_LCD_GREEN              EQU     0x60000342
 ADDR_LCD_BLUE               EQU     0x60000344
 ADDR_LCD_BIN                EQU     0x60000330
 MASK_KEY_T0                 EQU     0x00000001
+MASK_KEY_T1                 EQU     0x00000010
 BACKLIGHT_FULL              EQU     0xffff
+BACKLIGHT_NONE              EQU     0x0000
 
 ; ------------------------------------------------------------------
 ; -- myCode
@@ -41,14 +43,22 @@ user_prog
         LDR     R7, =ADDR_LCD_BLUE              ; Load base address of pwm blue
         LDR     R6, =BACKLIGHT_FULL             ; Set backlight to full brightness (blue)
         STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
+		LDR     R7, =ADDR_LCD_RED              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
+		LDR     R7, =ADDR_LCD_GREEN              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
 
         MOVS    R0, #0                          ; Initialize lower 32 bits of total sum to 0
         MOVS    R1, #0                          ; Initialize higher 32 bits of total sum to 0
 
 endless
         BL      waitForKey                      ; Wait for key T0 to be pressed
-
-        ; Load 32-bit value from DIP switches
+		
+		; Load 32-bit value from DIP switches
         LDR     R2, =ADDR_DIP_SWITCH_31_0       ; Load DIP switch address
         LDR     R3, [R2]                        ; Load 32-bit value from DIP switch into R3
 
@@ -77,16 +87,55 @@ no_carry
 
 ; wait for key to be pressed and released
 waitForKey
+		
+		LDR     R7, =ADDR_LCD_RED              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_FULL             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
+		LDR     R7, =ADDR_LCD_BLUE              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
+		LDR     R7, =ADDR_LCD_GREEN              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
         PUSH    {R0, R1, R2, R3}
         LDR     R1, =ADDR_BUTTONS               ; Load base address of keys
         LDR     R2, =MASK_KEY_T0                ; Load key mask T0
 
 waitForPress
-        LDRB    R0, [R1]                        ; Load key values
+        
+		LDR     R7, =ADDR_LCD_BLUE              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_FULL             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]
+		
+		LDR     R7, =ADDR_LCD_GREEN              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
+		LDR     R7, =ADDR_LCD_RED              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
+		LDRB    R0, [R1]                        ; Load key values
         TST     R0, R2                          ; Check if key T0 is pressed
         BEQ     waitForPress
 
 waitForRelease
+
+		LDR     R7, =ADDR_LCD_GREEN              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_FULL             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]
+
+		LDR     R7, =ADDR_LCD_BLUE              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+		
+		LDR     R7, =ADDR_LCD_RED              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
+
         LDRB    R0, [R1]                        ; Load key values
         TST     R0, R2                          ; Check if key T0 is released
         BNE     waitForRelease
