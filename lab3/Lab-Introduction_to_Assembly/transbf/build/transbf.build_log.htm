@@ -26,11 +26,18 @@ Project File Date:  09/30/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.22', folder: 'C:\Users\Perri\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
-Build target 'Target 1'
+Rebuild target 'Target 1'
 assembling transbf.s...
-app\transbf.s(94): error: A1618E: Specified instruction is not supported by the current instruction set
-app\transbf.s(96): error: A1618E: Specified instruction is not supported by the current instruction set
-".\build\transbf.axf" - 2 Error(s), 0 Warning(s).
+assembling startup_ctboard.s...
+assembling datainit_ctboard.s...
+compiling system_ctboard.c...
+compiling hal_pwr.c...
+compiling hal_fmc.c...
+compiling hal_gpio.c...
+compiling hal_rcc.c...
+linking...
+Program Size: Code=7800 RO-data=1000 RW-data=16 ZI-data=8192  
+".\build\transbf.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -53,38 +60,37 @@ Package Vendor: InES
 <h2>Collection of Component Files used:</h2>
 
    * Component: InES::Device:Startup@4.0.4
+      Include file:  Device/Include/reg_ctboard.h
       Include file:  Device/Include/m0/platform_ctboard.h
+      Source file:   Device/Source/system_ctboard.c
+      Source file:   Device/Source/startup_ctboard.s
+      Include file:  Device/Include/system_ctboard.h
       Source file:   Device/Source/datainit_ctboard.s
       Include file:  Device/Include/reg_stm32f4xx.h
-      Source file:   Device/Source/system_ctboard.c
-      Include file:  Device/Include/reg_ctboard.h
-      Include file:  Device/Include/system_ctboard.h
-      Source file:   Device/Source/startup_ctboard.s
 
    * Component: InES::HAL:FMC@4.0.4
+      Include file:  HAL/Include/hal_fmc.h
       Include file:  Device/Include/reg_stm32f4xx.h
       Include file:  HAL/Include/hal_common.h
-      Include file:  HAL/Include/hal_fmc.h
       Source file:   HAL/Source/hal_fmc.c
 
    * Component: InES::HAL:GPIO@4.0.4
       Include file:  HAL/Include/hal_gpio.h
-      Source file:   HAL/Source/hal_gpio.c
-      Include file:  Device/Include/reg_stm32f4xx.h
       Include file:  HAL/Include/hal_common.h
+      Include file:  Device/Include/reg_stm32f4xx.h
+      Source file:   HAL/Source/hal_gpio.c
 
    * Component: InES::HAL:PWR@4.0.4
-      Source file:   HAL/Source/hal_pwr.c
       Include file:  HAL/Include/hal_common.h
       Include file:  HAL/Include/hal_pwr.h
       Include file:  Device/Include/reg_stm32f4xx.h
+      Source file:   HAL/Source/hal_pwr.c
 
    * Component: InES::HAL:RCC@4.0.4
-      Include file:  Device/Include/reg_stm32f4xx.h
       Include file:  HAL/Include/hal_common.h
+      Include file:  Device/Include/reg_stm32f4xx.h
       Include file:  HAL/Include/hal_rcc.h
       Source file:   HAL/Source/hal_rcc.c
-Target not created.
 Build Time Elapsed:  00:00:01
 </pre>
 </body>

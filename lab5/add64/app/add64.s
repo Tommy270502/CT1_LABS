@@ -38,22 +38,36 @@ main    PROC
         EXPORT main
 
 user_prog
-        LDR     R7, =ADDR_LCD_BLUE              ; load base address of pwm blue
-        LDR     R6, =BACKLIGHT_FULL             ; backlight full blue
-        STRH    R6, [R7]                        ; write pwm register
+        LDR     R7, =ADDR_LCD_BLUE              ; Load base address of pwm blue
+        LDR     R6, =BACKLIGHT_FULL             ; Set backlight to full brightness (blue)
+        STRH    R6, [R7]                        ; Write pwm register for blue backlight
 
-        LDR     R0, =0                          ; lower 32 bits of total sum
-        LDR     R1, =0                          ; higher 32 bits of total sum
+        MOVS    R0, #0                          ; Initialize lower 32 bits of total sum to 0
+        MOVS    R1, #0                          ; Initialize higher 32 bits of total sum to 0
+
 endless
-        BL      waitForKey                      ; wait for key T0 to be pressed
+        BL      waitForKey                      ; Wait for key T0 to be pressed
 
-        ; STUDENTS: To be programmed
+        ; Load 32-bit value from DIP switches
+        LDR     R2, =ADDR_DIP_SWITCH_31_0       ; Load DIP switch address
+        LDR     R3, [R2]                        ; Load 32-bit value from DIP switch into R3
 
+        ; Add DIP switch value to the lower 32 bits (R0)
+        ADDS    R0, R0, R3                      ; Add DIP switch value to lower 32 bits (R0)
 
+        ; Check if a carry occurred
+        BCC     no_carry                        ; If no carry, skip the incrementing of R1
 
+        ; Handle the carry manually: increment the higher 32 bits (R1)
+        ADDS    R1, R1, #1                      ; Manually add carry to the higher 32 bits
 
-        ; END: To be programmed
-        B       endless
+no_carry
+        ; Update the LCD with the new 64-bit value
+        LDR     R5, =ADDR_LCD_BIN               ; Load base address of LCD binary display
+        STR     R0, [R5]                        ; Store lower 32 bits (R0) to LCD
+        STR     R1, [R5, #4]                    ; Store upper 32 bits (R1) to LCD (offset by 4 bytes)
+
+        B       endless                         ; Repeat forever
         ALIGN
 
 
@@ -63,21 +77,21 @@ endless
 
 ; wait for key to be pressed and released
 waitForKey
-        PUSH    {R0, R1, R2}
-        LDR     R1, =ADDR_BUTTONS               ; laod base address of keys
-        LDR     R2, =MASK_KEY_T0                ; load key mask T0
+        PUSH    {R0, R1, R2, R3}
+        LDR     R1, =ADDR_BUTTONS               ; Load base address of keys
+        LDR     R2, =MASK_KEY_T0                ; Load key mask T0
 
 waitForPress
-        LDRB    R0, [R1]                        ; load key values
-        TST     R0, R2                          ; check, if key T0 is pressed
+        LDRB    R0, [R1]                        ; Load key values
+        TST     R0, R2                          ; Check if key T0 is pressed
         BEQ     waitForPress
 
 waitForRelease
-        LDRB    R0, [R1]                        ; load key values
-        TST     R0, R2                          ; check, if key T0 is released
+        LDRB    R0, [R1]                        ; Load key values
+        TST     R0, R2                          ; Check if key T0 is released
         BNE     waitForRelease
 
-        POP     {R0, R1, R2}
+        POP     {R0, R1, R2, R3}
         BX      LR
         ALIGN
 

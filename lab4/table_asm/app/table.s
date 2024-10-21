@@ -21,6 +21,7 @@
 ; ------------------------------------------------------------------
 ADDR_DIP_SWITCH_7_0         EQU     0x60000200
 ADDR_DIP_SWITCH_15_8        EQU     0x60000201
+ADDR_DIP_SWITCH_23_16       EQU     0x60000202
 ADDR_DIP_SWITCH_31_24       EQU     0x60000203
 ADDR_LED_7_0                EQU     0x60000100
 ADDR_LED_15_8               EQU     0x60000101

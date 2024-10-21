@@ -88,18 +88,6 @@ main    PROC
         MOVS    R1, #8                  ; Offset for the third word (8 bytes)
         LDR     R0, [R7, R1]            ; Load the third word from store_table
 
-                ; Construct the bit pattern 0xAAAAAAAA in THUMB mode
-        MOVS    R4, #0xAA               ; Load lower byte (0xAA)
-        LSLS    R4, R4, #8              ; Shift left to form 0xAA00
-        ORRS    R4, R4, #0xAA           ; Combine to form 0xAAAA
-        LSLS    R4, R4, #16             ; Shift left to form 0xAAAA0000
-        ORRS    R4, R4, #0xAAAA         ; Complete to form 0xAAAAAAAA
-
-
-        ; Perform OR operation
-        ORRS     R0, R0, R4              ; OR the value in R0 with 0xAAAAAAAA
-        STR     R0, [R7, R1]            ; Store the result back in store_table
-
 
         ; write third value from store_table to leds
         MOVS    R1, #8
