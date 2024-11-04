@@ -167,3 +167,24 @@ loop
 ; End of code
 ; ------------------------------------------------------------------
         END
+
+        ; BCD Validation Check for Ones and Tens
+
+        ; Check if BCD ones (R2) is greater than 9
+        CMP     R2, #9
+        BHI     BCD_Error           ; Branch to error handling if BCD ones exceed 9
+
+        ; Check if BCD tens (R4) is greater than 9
+        CMP     R4, #9
+        BHI     BCD_Error           ; Branch to error handling if BCD tens exceed 9
+
+        ; Continue with normal processing if BCD values are valid
+        B       Continue_Normal_Processing
+
+BCD_Error
+        ; Error handling: set an error flag or reset the values
+        MOVS    R4, #0              ; Example: reset BCD value to 0 if invalid
+        MOVS    R2, #0              ; Reset BCD ones as well
+        ; You could also light up a specific LED here for error indication
+
+Continue_Normal_Processing

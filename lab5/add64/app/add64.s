@@ -75,7 +75,7 @@ no_carry
         ; Update the LCD with the new 64-bit value
         LDR     R5, =ADDR_LCD_BIN               ; Load base address of LCD binary display
         STR     R0, [R5]                        ; Store lower 32 bits (R0) to LCD
-        STR     R1, [R5, #4]                    ; Store upper 32 bits (R1) to LCD (offset by 4 bytes)
+        STR     R1, [R5, #8]                    ; Store upper 32 bits (R1) to LCD (offset by 4 bytes)
 
         B       endless                         ; Repeat forever
         ALIGN
