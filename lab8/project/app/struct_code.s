@@ -155,25 +155,48 @@ result_ge_zero
 		
 		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
 		STRB	R1, [R7, #1]
+		
+		ADDR_LCD_ASCII  EQU      0x60000300
+ 
+                LDR      r0, =ADDR_LCD_ASCII
+                LDR      r1, ="E"                         ; Load value of ASCII char 'E' into r1.                
+                STRB     r1, [r0, #12]                    ; Write 'E' at position 13 on the LCD.
 
 		B main_loop
 		
 t0_pressed
-		LDR     R7, =ADDR_LCD_GREEN              ; Load base address of pwm blue
-        LDR     R6, =BACKLIGHT_FULL             ; Set backlight to full brightness (blue)
-        STRH    R6, [R7]                        ; Write pwm register for blue backlight
-		LDR     R7, =ADDR_LCD_RED               ; Load base address of pwm blue
-        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
-        STRH    R6, [R7]                        ; Write pwm register for blue backlight
-		LDR     R7, =ADDR_LCD_BLUE              ; Load base address of pwm blue
-        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
-        STRH    R6, [R7]                        ; Write pwm register for blue backlight
-		
-		
-		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
-		STRB	R0, [R7, #0]
+	; Set the background color of the LCD to green
+	LDR     R7, =ADDR_LCD_GREEN              ; Load base address of green backlight
+    LDR     R6, =BACKLIGHT_FULL              ; Set backlight to full brightness (green)
+    STRH    R6, [R7]                         ; Write PWM register for green backlight
+	LDR     R7, =ADDR_LCD_RED                ; Load base address of red backlight
+    LDR     R6, =BACKLIGHT_NONE              ; Turn off red backlight
+    STRH    R6, [R7]                         ; Write PWM register for red backlight
+	LDR     R7, =ADDR_LCD_BLUE               ; Load base address of blue backlight
+    LDR     R6, =BACKLIGHT_NONE              ; Turn off blue backlight
+    STRH    R6, [R7]                         ; Write PWM register for blue backlight
+	
+	; Display the ADC value on the 7-segment display
+	LDR		R7, =ADDR_7_SEG_BIN_DS3_0
+	STRB	R0, [R7, #0]
 
-		B main_loop
+	; Initialize LED bar based on ADC value
+	LSRS    R0, R0, #3            ; Scale ADC value from 8-bit to 5-bit by dividing by 8
+	MOVS    R1, #1                ; Initialize R1 with LED0 (first LED bit)
+
+led_bar_loop
+	CMP     R0, #0                 ; Compare scaled ADC value with 0
+	BEQ     end_led_bar            ; Exit loop if no more LEDs to turn on
+	LSLS    R2, R1, #1             ; Shift R1 left by 1 to set the next LED bit in R2
+	ORRS    R1, R1, R2             ; OR the shifted bit to R1 to turn on the next LED
+	SUBS    R0, R0, #1             ; Decrease scaled ADC value by 1
+	B       led_bar_loop           ; Repeat until R0 is 0
+
+end_led_bar
+	LDR     R2, =ADDR_LED_31_0    ; Load the LED base address
+	STR     R1, [R2]              ; Write result to display LED bar on LED31..0
+
+	B main_loop
 
 pause           PROC
         PUSH    {R0, R1}
