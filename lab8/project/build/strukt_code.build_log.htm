@@ -28,16 +28,16 @@ Project File Date:  11/04/2024
 *** Using Compiler 'V6.22', folder: 'C:\Users\Perri\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Rebuild target 'Target 1'
 compiling adc.c...
-compiling hal_fmc.c...
 compiling system_ctboard.c...
-"app/struct_code.s", line 247: Warning: A1488W: PROC/FUNC at line 81 in 'app/struct_code.s' without matching ENDP/ENDFUNC
-  247 000000d8 pause           PROC
-"app/struct_code.s", line 284: Warning: A1464W: ENDP/ENDFUNC without corresponding PROC/FUNC
-  284 0000010c         ENDP
+compiling hal_fmc.c...
+assembling datainit_ctboard.s...
+assembling startup_ctboard.s...
+"app/struct_code.s", line 248: Warning: A1488W: PROC/FUNC at line 82 in 'app/struct_code.s' without matching ENDP/ENDFUNC
+  248 000000d8 pause           PROC
+"app/struct_code.s", line 285: Warning: A1464W: ENDP/ENDFUNC without corresponding PROC/FUNC
+  285 0000010c         ENDP
 0 Errors, 2 Warnings
 assembling struct_code.s...
-assembling startup_ctboard.s...
-assembling datainit_ctboard.s...
 compiling hal_gpio.c...
 compiling hal_pwr.c...
 compiling hal_rcc.c...
@@ -66,38 +66,38 @@ Package Vendor: InES
 <h2>Collection of Component Files used:</h2>
 
    * Component: InES::Device:Startup@4.0.4
+      Source file:   Device/Source/datainit_ctboard.s
+      Include file:  Device/Include/reg_stm32f4xx.h
+      Include file:  Device/Include/system_ctboard.h
+      Source file:   Device/Source/system_ctboard.c
       Source file:   Device/Source/startup_ctboard.s
       Include file:  Device/Include/reg_ctboard.h
-      Source file:   Device/Source/datainit_ctboard.s
-      Source file:   Device/Source/system_ctboard.c
-      Include file:  Device/Include/reg_stm32f4xx.h
       Include file:  Device/Include/m0/platform_ctboard.h
-      Include file:  Device/Include/system_ctboard.h
 
    * Component: InES::HAL:FMC@4.0.4
-      Include file:  HAL/Include/hal_common.h
       Include file:  HAL/Include/hal_fmc.h
-      Source file:   HAL/Source/hal_fmc.c
+      Include file:  HAL/Include/hal_common.h
       Include file:  Device/Include/reg_stm32f4xx.h
+      Source file:   HAL/Source/hal_fmc.c
 
    * Component: InES::HAL:GPIO@4.0.4
-      Source file:   HAL/Source/hal_gpio.c
       Include file:  Device/Include/reg_stm32f4xx.h
-      Include file:  HAL/Include/hal_common.h
+      Source file:   HAL/Source/hal_gpio.c
       Include file:  HAL/Include/hal_gpio.h
+      Include file:  HAL/Include/hal_common.h
 
    * Component: InES::HAL:PWR@4.0.4
-      Include file:  Device/Include/reg_stm32f4xx.h
       Include file:  HAL/Include/hal_common.h
       Include file:  HAL/Include/hal_pwr.h
       Source file:   HAL/Source/hal_pwr.c
+      Include file:  Device/Include/reg_stm32f4xx.h
 
    * Component: InES::HAL:RCC@4.0.4
-      Include file:  HAL/Include/hal_rcc.h
       Include file:  Device/Include/reg_stm32f4xx.h
       Include file:  HAL/Include/hal_common.h
+      Include file:  HAL/Include/hal_rcc.h
       Source file:   HAL/Source/hal_rcc.c
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:00
 </pre>
 </body>
 </html>
