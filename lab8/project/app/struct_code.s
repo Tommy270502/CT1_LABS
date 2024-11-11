@@ -106,31 +106,30 @@ user_prog
 main_loop
 ; STUDENTS: To be programmed
 		BL 		adc_get_value 		;stores adc_val in R0
-		PUSH 	{R0}					;stores adc_val from R0 to stack memory
 		
 		;read out buttons
-		LDR 	R0, =ADDR_BUTTONS
-		LDRB	R1, [R0];			;stores button values
-		POP		{R0}
-		;check if button t0 is pressed
-		MOVS 	R2, #1
-		TST		R1, R2
-		BNE		t0_pressed
-		TST		R1, R2
-		BEQ		t0_not_pressed
+		LDR 	R1, =ADDR_BUTTONS
+		LDRB	R2, [R1];			;stores button values
 		
-		LDR     R7, =ADDR_LCD_GREEN              ; Load base address of pwm blue
-        LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
-        STRH    R6, [R7]                        ; Write pwm register for blue backlight
-; END: To be programmed
-        B          main_loop
-
-t0_not_pressed
+		;check if button t0 is pressed
+		MOVS 	R3, #1
+		TST		R2, R3
+		BNE		t0_pressed		
+		
 		LDR 	R1, =ADDR_DIP_SWITCH_7_0
 		LDRB	R1, [R1]
 		SUBS	R1, R0
 		BGE     result_ge_zero ; Branch if the result is >= 0
 		;if negative
+		BL 		set_red
+		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
+		STRB	R1, [R7, #1]
+		
+		
+; END: To be programmed
+        B          main_loop
+		
+set_red
 		LDR     R7, =ADDR_LCD_RED              ; Load base address of pwm blue
         LDR     R6, =BACKLIGHT_FULL             ; Set backlight to full brightness (blue)
         STRH    R6, [R7]                        ; Write pwm register for blue backlight
@@ -140,11 +139,9 @@ t0_not_pressed
 		LDR     R7, =ADDR_LCD_BLUE              ; Load base address of pwm blue
         LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
         STRH    R6, [R7]                        ; Write pwm register for blue backlight
-		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
-		STRB	R1, [R7, #1]
 		
-		B main_loop
-		
+		BX 		LR
+
 result_ge_zero
 		LDR     R7, =ADDR_LCD_RED              ; Load base address of pwm blue
         LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
@@ -159,7 +156,7 @@ result_ge_zero
 		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
 		STRB	R1, [R7, #1]
 
-		BX LR
+		B main_loop
 		
 t0_pressed
 		LDR     R7, =ADDR_LCD_GREEN              ; Load base address of pwm blue
@@ -176,7 +173,7 @@ t0_pressed
 		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
 		STRB	R0, [R7, #0]
 
-		BX LR
+		B main_loop
 
 pause           PROC
         PUSH    {R0, R1}
