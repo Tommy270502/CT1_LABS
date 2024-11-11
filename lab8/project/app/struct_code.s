@@ -156,11 +156,32 @@ result_ge_zero
 		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
 		STRB	R1, [R7, #1]
 		
-		ADDR_LCD_ASCII  EQU      0x60000300
- 
-                LDR      r0, =ADDR_LCD_ASCII
-                LDR      r1, ="E"                         ; Load value of ASCII char 'E' into r1.                
-                STRB     r1, [r0, #12]                    ; Write 'E' at position 13 on the LCD.
+		BL 		write_bit_ascii
+		
+		CMP     R1, #4
+		BLT     display_2_bit          ; If R1 < 4, branch to display '2 Bit'
+
+		; Check if R1 < 16
+		CMP     R1, #16
+		BLT     display_4_bit          ; If R1 < 16, branch to display '4 Bit'
+
+    ; Otherwise, display '8 Bit'
+display_8_bit
+		LDR     R7, =ADDR_LCD_ASCII    ; Load LCD ASCII address
+		LDR     R6, =0x38              ; ASCII value for '8'
+		STRB    R6, [R7]               ; Write '8' to LCD position 0
+		B       main_loop            ; Skip to end
+														
+display_4_bit
+		LDR     R7, =ADDR_LCD_ASCII    ; Load LCD ASCII address
+		LDR     R6, =0x34              ; ASCII value for '4'
+		STRB    R6, [R7]               ; Write '4' to LCD position 0
+		B       main_loop            ; Skip to end
+
+display_2_bit
+		LDR     R7, =ADDR_LCD_ASCII    ; Load LCD ASCII address
+		LDR     R6, =0x32              ; ASCII value for '2'
+		STRB    R6, [R7]               ; Write '2' to LCD position 0
 
 		B main_loop
 		
