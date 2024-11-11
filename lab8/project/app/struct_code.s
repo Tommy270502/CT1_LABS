@@ -122,8 +122,7 @@ main_loop
 		BGE     result_ge_zero ; Branch if the result is >= 0
 		;if negative
 		BL 		set_red
-		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
-		STRB	R1, [R7, #1]
+		
 		
 		
 ; END: To be programmed
@@ -140,7 +139,33 @@ set_red
         LDR     R6, =BACKLIGHT_NONE             ; Set backlight to full brightness (blue)
         STRH    R6, [R7]                        ; Write pwm register for blue backlight
 		
-		BX 		LR
+		LDR		R7, =ADDR_7_SEG_BIN_DS3_0
+		STRB	R1, [R7, #1]
+		
+count_zeros
+        MOVS    R4, #0                      ; Initialize zero counter to 0
+        MOV     R5, R1                      ; Copy diff to R5 for counting
+
+count_loop
+        LSLS    R6, R5, #31                 ; Test if the least significant bit of R5 is 0
+        BEQ     zero_found                  ; If bit is zero, branch to zero_found
+        B       shift_right                 ; Otherwise, continue with the next bit
+
+zero_found
+        ADDS    R4, R4, #1                  ; Increment zero counter
+
+shift_right
+        LSRS    R5, R5, #1                  ; Shift R5 right by 1 bit
+        CMP     R5, #0                      ; Check if all bits have been processed
+        BNE     count_loop                  ; If not, continue counting
+
+display_zero_count
+        LDR     R7, =ADDR_LCD_ASCII_2ND_LINE ; Load address for the second LCD line
+        LDR     R6, =ASCII_DIGIT_OFFSET     ; Load ASCII offset into R6
+        ADDS    R4, R4, R6                  ; Adjust R4 to ASCII value for display
+        STRB    R4, [R7]                    ; Display zero count on the second line of the LCD
+        BX      LR                          ; Return from subroutine
+
 
 result_ge_zero
 		LDR     R7, =ADDR_LCD_RED              ; Load base address of pwm blue
